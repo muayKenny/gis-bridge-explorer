@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  extensions = [postgis]
+}
+
+model Bridge {
+  id                String   @id @default(cuid())
+  structureNumber  String   @unique // STRUCTURE_NUMBER_008
+  latitude         Float    // LAT_016
+  longitude        Float    // LONG_017
+  location         Unsupported("geometry(Point, 4326)") // PostGIS point for spatial queries
+  yearBuilt        Int?     // YEAR_BUILT_027
+  
+  // Condition Ratings (0-9 scale, where 9 is excellent)
+  deckCondition     Int?    // DECK_COND_058
+  superstructureCond Int?   // SUPERSTRUCTURE_COND_059
+  substructureCond  Int?    // SUBSTRUCTURE_COND_060
+  bridgeCondition   String? // BRIDGE_CONDITION (overall)
+  
+  // Usage/Size Info
+  avgDailyTraffic   Int?    // ADT_029
+  trafficLanes      Int?    // TRAFFIC_LANES_ON_028A
+  lengthMeters      Float?  // STRUCTURE_LEN_MT_049
+  
+  // Metadata
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Adding spatial index instead of regular lat/long index
+  @@index([location], type: Gist)
+}
