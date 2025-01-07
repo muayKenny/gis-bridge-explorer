@@ -10,10 +10,14 @@
     "build": "turbo build",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "db:up": "docker-compose up -d",
-    "db:down": "docker-compose down",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "db:kill": "docker compose down -v",
     "dev": "turbo run db:up dev",
-    "db:kill": "docker-compose down -v"
+    "db:push": "pnpm --filter @gis-bridge-explorer/database db:push",
+    "db:generate": "pnpm --filter @gis-bridge-explorer/database db:generate",
+    "db:seed": "pnpm --filter @gis-bridge-explorer/database db:seed",
+    "db:setup": "pnpm db:up && pnpm db:push && pnpm db:generate && pnpm db:seed"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
